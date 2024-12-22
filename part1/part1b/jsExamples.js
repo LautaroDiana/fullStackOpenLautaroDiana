@@ -129,3 +129,70 @@ function product(a, b) {
 const average = function(a, b) {
     return (a + b) / 2
 }
+
+// Objetos y metodos
+
+const arto = {
+    name: "Arto Hellas",
+    age: 35,
+    education: "PhD",
+    greet: function() {
+        console.log("Hello, my name is " + this.name)
+    }
+}
+
+arto.greet()
+
+// Los metodos se pueden definir despues de declarar el objeto
+arto.growOlder = function() {
+    this.age += 1
+}
+
+console.log(arto.age) // 35
+arto.growOlder()
+console.log(arto.age) // 36
+
+// Contexto de un metodo.
+
+// Podemos tener un metodo que acepte argumentos por fuera del metodo
+// pero no tendra acceso a los atributos internos. Por ejemplo
+
+arto.doAddition = function(a, b) {
+    console.log(a + b)
+}
+
+// Puedo usar una variable referenciando a dicho metodo
+const referenceToAddition = arto.doAddition
+referenceToAddition(10, 15) // 25
+
+// Pero no puedo hacer esto con los metodos que hacen llamadas a los
+// atributos del objeto, como el metodo .greet() que llama al atributo
+// .name
+
+const referenceToGreet = arto.greet
+referenceToGreet() // Hello, my name is undefined 
+
+// Uno de los casos donde puede ocurrir esto es usando setTimeout
+setTimeout(arto.greet, 1000) // Hello, my name is undefined 
+
+// Una manera de solucionarlo es utilizar el metodo bind, que crea una 
+// nueva funcion this obligada a llamar al objeto Arto
+setTimeout(arto.greet.bind(arto), 1000)
+
+// Clases
+
+// JavaScript no tiene un mecanismo de clase como los de los lenguajes 
+// orientados a objetos. Sin embargo, puede simular clases.
+
+class Person {
+    constructor(name, age) {
+        this.name = name
+        this.age = age
+    }
+    greet() {
+        console.log(`Hello, my name is ${this.name}`)
+    }
+}
+
+const adam = new Person("Adam Ondra", 29)
+adam.greet()
