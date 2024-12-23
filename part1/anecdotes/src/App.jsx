@@ -2,7 +2,7 @@ import { useState } from "react"
 
 const Button = ({text, handleFunction}) => {
   return (
-    <button onClick={handleFunction}>new {text}</button>
+    <button onClick={handleFunction}>{text}</button>
   )
 }
 const App = () => {
@@ -33,25 +33,22 @@ const App = () => {
     newVotes[selected] += 1
     setVotes(newVotes)
   }
-  const maxVotes = () => {
-    let max = 0
-    let maxIndex = 0
-    for (let index = 0; index <= votes.length; index++) {
-      if (votes[index] > max) {
-        max = votes[index]
-        maxIndex = index
-      } 
-    }
-    return maxIndex
+
+  const getMostVotedAnecdote = () => {
+    const maxVotes = Math.max(...Object.values(votes))
+    const mostVotedIndex = Object.keys(votes).find(key => votes[key] === maxVotes)
+    return anecdotes[mostVotedIndex]
   }
+
   return (
     <div>
       <h1>Anecdote of the day</h1>
       <p>{anecdotes[selected]}</p>
       <p> has {votes[selected]} votes</p>
-      <Button handleFunction={updateAnecdote} text="anecdote" />
-      <Button handleFunction={updateVotes} text="votes" />
-      <p>most voted anecdote is {maxVotes()}</p>
+      <Button handleFunction={updateVotes} text="vote" />
+      <Button handleFunction={updateAnecdote} text="next anecdote" />
+      <h1>Anecdote with most votes</h1>
+      <p>{getMostVotedAnecdote()}</p>
     </div>
   )
 }
