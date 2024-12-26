@@ -1,4 +1,4 @@
-const Note = ({id, content}) => <li key={id}>{content}</li>
+import { Note } from "./components/Note"
 
 const App = ({ notes }) => {
   return (
@@ -6,7 +6,7 @@ const App = ({ notes }) => {
       <h1>notes</h1>
       <ul>
         {notes.map(
-          note => <Note key={note.id} content={note.content} />
+          note => <Note key={note.id} note={note} />
         )}
       </ul>
     </div>
