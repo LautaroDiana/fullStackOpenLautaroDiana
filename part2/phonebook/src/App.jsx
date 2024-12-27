@@ -1,5 +1,44 @@
 import { useState } from 'react'
 
+const Filter = ({handleNameFilterChange}) => {
+  return (
+    <div>
+      <h2>Add a filter</h2>
+      <input onChange={handleNameFilterChange} />
+    </div>
+  )
+}
+
+const PersonForm = ({newName, newNumber, handleNameChange, handleNumberChange, addPerson}) => {
+  return (
+    <div>
+      <h2>Phonebook</h2>
+      <form onSubmit={addPerson}>
+        <div>
+          name: <input value={newName} onChange={handleNameChange}/>
+        </div>
+        <div>
+          number: <input value={newNumber} onChange={handleNumberChange}/>
+        </div>
+        <div>
+          <button type="submit" >add</button>
+        </div>
+      </form>
+    </div>
+  )
+}
+
+const Persons = ({filteredPersons}) => {
+  return (
+    <div>
+      <h2>Numbers</h2>
+      <ul>
+        {filteredPersons.map(person => <li key={person.name}>{person.name}, {person.number}</li>)}
+      </ul>
+    </div>
+  )
+}
+
 const App = () => {
   const [persons, setPersons] = useState([
     {
@@ -43,24 +82,21 @@ const App = () => {
 
   return (
     <div>
-      <h2>Add a filter</h2>
-      <input onChange={handleNameFilterChange} />
-      <h2>Phonebook</h2>
-      <form onSubmit={addPerson}>
-        <div>
-          name: <input value={newName} onChange={handleNameChange}/>
-        </div>
-        <div>
-          number: <input value={newNumber} onChange={handleNumberChange}/>
-        </div>
-        <div>
-          <button type="submit" >add</button>
-        </div>
-      </form>
-      <h2>Numbers</h2>
-      <ul>
-        {filteredPersons.map(person => <li key={person.name}>{person.name}, {person.number}</li>)}
-      </ul>
+      <Filter 
+        handleNameFilterChange={handleNameFilterChange}
+      />
+
+      <PersonForm 
+        newName={newName} 
+        newNumber={newNumber}
+        addPerson={addPerson}
+        handleNameChange={handleNameChange}
+        handleNumberChange={handleNumberChange}
+      />
+
+      <Persons 
+        filteredPersons={filteredPersons}
+      />
     </div>
   )
 }
