@@ -47,15 +47,6 @@ const App = () => {
   const [newNumber, setNewNumber] = useState('')
   const [nameFilter, setNameFilter] = useState('')
 
-  // useEffect(() => {
-  //   axios.get("http://localhost:3001/persons")
-  //     .then(response => {
-  //         console.log('promise fulfilled');
-  //         setPersons(response.data)
-  //       }
-  //     )
-  //   }, [])
-
   useEffect(() => {
     personService.getAll()
     .then(
@@ -73,14 +64,20 @@ const App = () => {
           name: newName,
           number: newNumber
         }
-        axios.post("http://localhost:3001/persons", nameObject)
-          .then(response => {
-            console.log("response data", response.data);
-            console.log("nameObject", nameObject);
-            setPersons(persons.concat(nameObject))
+        personService.create(nameObject)
+          .then(newPerson => {
+            setPersons(persons.concat(newPerson))
             setNewName('')
             setNewNumber('')
-          }) 
+          })
+        // axios.post("http://localhost:3001/persons", nameObject)
+        //   .then(response => {
+        //     console.log("response data", response.data);
+        //     console.log("nameObject", nameObject);
+        //     setPersons(persons.concat(nameObject))
+        //     setNewName('')
+        //     setNewNumber('')
+        //   }) 
       }  
     }
   }
