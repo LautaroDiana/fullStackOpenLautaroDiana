@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react'
-import axios from 'axios'
 import personService from './services/persons'
 
 const Filter = ({handleNameFilterChange}) => {
@@ -30,12 +29,21 @@ const PersonForm = ({newName, newNumber, handleNameChange, handleNumberChange, a
   )
 }
 
-const Persons = ({filteredPersons}) => {
+const Persons = ({filteredPersons, deleteUser}) => {
   return (
     <div>
       <h2>Numbers</h2>
       <ul>
-        {filteredPersons.map(person => <li key={person.name}>{person.name}, {person.number}</li>)}
+        
+        {filteredPersons.map((person) => {
+          return (
+          <div key={person.name}>
+            <li>
+              {person.name}, {person.number} 
+              <button onClick={() => deleteUser(person.name)}>delete</button>
+            </li>
+          </div>)
+        })}
       </ul>
     </div>
   )
@@ -70,14 +78,6 @@ const App = () => {
             setNewName('')
             setNewNumber('')
           })
-        // axios.post("http://localhost:3001/persons", nameObject)
-        //   .then(response => {
-        //     console.log("response data", response.data);
-        //     console.log("nameObject", nameObject);
-        //     setPersons(persons.concat(nameObject))
-        //     setNewName('')
-        //     setNewNumber('')
-        //   }) 
       }  
     }
   }
@@ -89,6 +89,9 @@ const App = () => {
   }
   const handleNameFilterChange = (event) => {
     setNameFilter(event.target.value.toLowerCase())
+  }
+  const deleteUser = (personName) => {
+    console.log(`Person ${personName} must be deleted`);
   }
   const filteredPersons = nameFilter === ''
   ? persons
@@ -110,6 +113,7 @@ const App = () => {
 
       <Persons 
         filteredPersons={filteredPersons}
+        deleteUser={deleteUser}
       />
     </div>
   )
