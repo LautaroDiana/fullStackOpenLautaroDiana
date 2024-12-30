@@ -40,7 +40,7 @@ const Persons = ({filteredPersons, deleteUser}) => {
           <div key={person.name}>
             <li>
               {person.name}, {person.number} 
-              <button onClick={() => deleteUser(person.name)}>delete</button>
+              <button onClick={() => deleteUser(person.id, person.name)}>delete</button>
             </li>
           </div>)
         })}
@@ -90,8 +90,12 @@ const App = () => {
   const handleNameFilterChange = (event) => {
     setNameFilter(event.target.value.toLowerCase())
   }
-  const deleteUser = (personName) => {
-    console.log(`Person ${personName} must be deleted`);
+  const deleteUser = (id) => {
+    personService.deleteUser(id)
+    .then(() => {
+      setPersons(persons.filter(person => person.id !== id ))
+    }
+    )
   }
   const filteredPersons = nameFilter === ''
   ? persons
