@@ -49,11 +49,32 @@ const Persons = ({filteredPersons, deleteUser}) => {
   )
 }
 
+const Notification = ({ displayNotification }) => {
+  if (!displayNotification) {
+    return null
+  }
+
+  const notificationStyle = {
+    color: 'green',
+    background: 'lightgrey',
+    fontSize: 20,
+    borderStyle: 'solid',
+    borderRadius: 5,
+    padding: 10,
+    margin: 10
+  }
+  return (
+    <div style={notificationStyle}>
+      Added something...
+    </div>
+  )
+}
 const App = () => {
   const [persons, setPersons] = useState([])
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [nameFilter, setNameFilter] = useState('')
+  const [displayNotification, setDisplayNotification] = useState(false)
 
   useEffect(() => {
     personService.getAll()
@@ -64,7 +85,7 @@ const App = () => {
 
   const addPerson = (event) => {
     event.preventDefault()
-    if (newName != '' && newNumber != '') {
+    if (newName !== '' && newNumber !== '') {
       if (persons.some(person => person.name === newName)) {
 
         const confirm = window.confirm(`${newName} is already added to phonebook, replace old number with a new one?`)
@@ -112,9 +133,6 @@ const App = () => {
 
   return (
     <div>
-      <Filter 
-        handleNameFilterChange={handleNameFilterChange}
-      />
 
       <PersonForm 
         newName={newName} 
@@ -122,6 +140,14 @@ const App = () => {
         addPerson={addPerson}
         handleNameChange={handleNameChange}
         handleNumberChange={handleNumberChange}
+      />
+
+      <Notification 
+
+      />
+
+      <Filter 
+        handleNameFilterChange={handleNameFilterChange}
       />
 
       <Persons 
