@@ -49,7 +49,7 @@ const Persons = ({filteredPersons, deleteUser}) => {
   )
 }
 
-const Notification = ({ displayNotification }) => {
+const Notification = ({ displayNotification, displayMessage }) => {
   if (!displayNotification) {
     return null
   }
@@ -65,7 +65,7 @@ const Notification = ({ displayNotification }) => {
   }
   return (
     <div style={notificationStyle}>
-      Added something...
+      {displayMessage}
     </div>
   )
 }
@@ -75,6 +75,7 @@ const App = () => {
   const [newNumber, setNewNumber] = useState('')
   const [nameFilter, setNameFilter] = useState('')
   const [displayNotification, setDisplayNotification] = useState(false)
+  const [displayMessage, setDisplayMessage] = useState('')
 
   useEffect(() => {
     personService.getAll()
@@ -95,6 +96,12 @@ const App = () => {
           personService.update(personToChange.id, changedPerson)
             .then(returnedPerson => {
               setPersons(persons.map(person => person.id !== returnedPerson.id ? person : changedPerson))
+              setDisplayMessage(`${changedPerson.name} number has been updated`)
+              setDisplayNotification(true)
+              setTimeout(() =>{
+                setDisplayNotification(false)
+                setDisplayMessage('')
+              }, 5000)  
           })
         }
       } else {
@@ -107,10 +114,17 @@ const App = () => {
             setPersons(persons.concat(newPerson))
             setNewName('')
             setNewNumber('')
+            setDisplayNotification(true)
+            setDisplayMessage(`${newName} has been added to phonebook`)
+            setTimeout(() =>{
+              setDisplayNotification(false)
+              setDisplayMessage('')
+            }, 5000)
           })
       }  
     }
   }
+  console.log(displayNotification)
   const handleNameChange = (event) => {
     setNewName(event.target.value)
   }
@@ -120,8 +134,8 @@ const App = () => {
   const handleNameFilterChange = (event) => {
     setNameFilter(event.target.value.toLowerCase())
   }
-  const deleteUser = (id) => {
-    personService.deleteUser(id)
+  const deleteUser = (id, username) => {
+    personService.deleteUser(id, username)
     .then(() => {
       setPersons(persons.filter(person => person.id !== id ))
     }
@@ -143,7 +157,8 @@ const App = () => {
       />
 
       <Notification 
-
+        displayNotification={displayNotification}
+        displayMessage={displayMessage}
       />
 
       <Filter 

@@ -16,8 +16,8 @@ const update = (id, newObject) => {
     return request.then(response => response.data)
 }
 
-const deleteUser = (id) => {
-    const confirm = window.confirm(`do you want to delete ${id} from phonebook?`)
+const deleteUser = (id, username) => {
+    const confirm = window.confirm(`do you want to delete ${username} from phonebook?`)
     if (confirm) {
         const request = axios.delete(`${baseUrl}/${id}`)
         return request.then(response => response.data)
