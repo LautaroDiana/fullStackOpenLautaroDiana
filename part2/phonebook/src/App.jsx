@@ -49,7 +49,7 @@ const Persons = ({filteredPersons, deleteUser}) => {
   )
 }
 
-const Notification = ({ displayNotification, displayMessage }) => {
+const Notification = ({ displayNotification, displayMessage, displayIsError }) => {
   if (!displayNotification) {
     return null
   }
@@ -62,6 +62,9 @@ const Notification = ({ displayNotification, displayMessage }) => {
     borderRadius: 5,
     padding: 10,
     margin: 10
+  }
+  if (displayIsError) {
+    notificationStyle.color = 'red'
   }
   return (
     <div style={notificationStyle}>
@@ -76,6 +79,7 @@ const App = () => {
   const [nameFilter, setNameFilter] = useState('')
   const [displayNotification, setDisplayNotification] = useState(false)
   const [displayMessage, setDisplayMessage] = useState('')
+  const [displayIsError, setDisplayIsError] = useState(false)
 
   useEffect(() => {
     personService.getAll()
@@ -101,7 +105,17 @@ const App = () => {
               setTimeout(() =>{
                 setDisplayNotification(false)
                 setDisplayMessage('')
-              }, 5000)  
+              }, 5000)
+          })
+          .catch(error => {
+            setDisplayMessage(`${changedPerson.name} has already been removed from server`)
+            setDisplayNotification(true)
+            setDisplayIsError(true)
+            setTimeout(() =>{
+              setDisplayNotification(false)
+              setDisplayMessage('')
+              setDisplayIsError(false)
+            }, 5000)
           })
         }
       } else {
@@ -124,7 +138,6 @@ const App = () => {
       }  
     }
   }
-  console.log(displayNotification)
   const handleNameChange = (event) => {
     setNewName(event.target.value)
   }
@@ -159,6 +172,7 @@ const App = () => {
       <Notification 
         displayNotification={displayNotification}
         displayMessage={displayMessage}
+        displayIsError={displayIsError}
       />
 
       <Filter 
