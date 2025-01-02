@@ -21,11 +21,16 @@ const CountriesDisplayer = ({ filteredCountriesList }) => {
 const App = () => {
   const [filterText, setFilterText] = useState('')
   const [countriesObj, setCountriesObj] = useState({})
-  const [filteredCountriesList, setFilteredCountriesList] = useState([])
+  const [countriesList, setCountriesList] = useState([])
 
   const handleFilterText = (event) => {
     setFilterText(event.target.value)
   }
+
+  const filteredCountriesList = filterText === '' ?
+  countriesList : countriesList.filter(
+    country => country.toLowerCase().includes(filterText.toLowerCase())
+  )
 
 
   useEffect(() => {
@@ -35,14 +40,14 @@ const App = () => {
       const newCountriesObj = {...response}
       setCountriesObj(newCountriesObj)
       
-      const newFilteredCountries = []
+      const countries = []
       Object
         .keys(newCountriesObj)
         .forEach(key => {
-          newFilteredCountries.push(newCountriesObj[key].name.common)
+          countries.push(newCountriesObj[key].name.common)
         })
       
-      setFilteredCountriesList(newFilteredCountries)
+      setCountriesList(countries)
     })
     .then(() => console.log("done!"))
   }
