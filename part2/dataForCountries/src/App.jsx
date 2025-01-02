@@ -10,6 +10,14 @@ const Filter = ({ handleFilterText }) => {
   )
 }
 
+const CountriesDisplayer = ({ filteredCountriesList }) => {
+  return (
+    <ul>
+      {filteredCountriesList.map(country => <li key={country}>{country}</li>)}
+    </ul>
+  )
+}
+
 const App = () => {
   const [filterText, setFilterText] = useState('')
   const [countriesObj, setCountriesObj] = useState({})
@@ -26,18 +34,28 @@ const App = () => {
     .then(response => {
       const newCountriesObj = {...response}
       setCountriesObj(newCountriesObj)
+      
+      const newFilteredCountries = []
+      Object
+        .keys(newCountriesObj)
+        .forEach(key => {
+          newFilteredCountries.push(newCountriesObj[key].name.common)
+        })
+      
+      setFilteredCountriesList(newFilteredCountries)
     })
     .then(() => console.log("done!"))
   }
   , [])
-
-  console.log(countriesObj)
 
   return (
     <div>
       <h1>Hello!</h1>
       <Filter 
         handleFilterText={handleFilterText}
+      />
+      <CountriesDisplayer 
+        filteredCountriesList={filteredCountriesList}
       />
     </div>
   )
