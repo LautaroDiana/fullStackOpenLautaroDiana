@@ -1,4 +1,5 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
+import countriesService from "./services/countries"
 
 const Filter = ({ handleFilterText }) => {
   return (
@@ -11,10 +12,26 @@ const Filter = ({ handleFilterText }) => {
 
 const App = () => {
   const [filterText, setFilterText] = useState('')
+  const [countriesObj, setCountriesObj] = useState({})
+  const [filteredCountriesList, setFilteredCountriesList] = useState([])
 
   const handleFilterText = (event) => {
     setFilterText(event.target.value)
   }
+
+
+  useEffect(() => {
+    countriesService
+    .getCountries()
+    .then(response => {
+      const newCountriesObj = {...response}
+      setCountriesObj(newCountriesObj)
+    })
+    .then(() => console.log("done!"))
+  }
+  , [])
+
+  console.log(countriesObj)
 
   return (
     <div>
