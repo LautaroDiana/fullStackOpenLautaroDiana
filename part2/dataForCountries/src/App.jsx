@@ -10,12 +10,49 @@ const Filter = ({ handleFilterText }) => {
   )
 }
 
-const CountriesDisplayer = ({ filteredCountriesList }) => {
-  return (
-    <ul>
-      {filteredCountriesList.map(country => <li key={country}>{country}</li>)}
-    </ul>
-  )
+const CountriesDisplayer = ({ filteredCountriesList, countriesObj }) => {
+
+  const countryInfo = country => {
+
+    const key = Object
+      .keys(countriesObj)
+      .filter(key => countriesObj[key].name.common === country)
+      return countriesObj[key]
+  }
+  if (filteredCountriesList.length > 10) {
+    return (
+      <div>Too many countries, specify another filter</div>
+    )
+  } else if (filteredCountriesList.length <= 10 && filteredCountriesList.length > 1 ){
+    return (
+      <ul>
+        {filteredCountriesList.map(country => <li key={country}>{country}</li>)}
+      </ul>
+    )  
+  } else if (filteredCountriesList.length === 1) {
+    const country = filteredCountriesList[0]
+    const info = countryInfo(country)
+
+    return (
+      <div>
+        <h1>{country}</h1>
+        <div>capital {info.capital[0]}</div>
+        <div>area {info.area}</div>
+        <br />
+        <h2>languages:</h2>
+        <br />
+        {/* <ul>
+          {String(Object.keys(info.laguanges))}
+        </ul> */}
+        <img src={info.flags.svg} alt={info.flags.alt} width="300" height="300" />
+        <div></div>
+      </div>
+    )
+  } else {
+    return (
+      <div>No matches found</div>
+    )
+  }
 }
 
 const App = () => {
@@ -61,6 +98,7 @@ const App = () => {
       />
       <CountriesDisplayer 
         filteredCountriesList={filteredCountriesList}
+        countriesObj={countriesObj}
       />
     </div>
   )
