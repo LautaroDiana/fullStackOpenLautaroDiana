@@ -10,15 +10,9 @@ const Filter = ({ handleFilterText }) => {
   )
 }
 
-const CountriesDisplayer = ({ filteredCountriesList, countriesObj }) => {
+const CountriesDisplayer = ({ filteredCountriesList }) => {
+  const [countryInfo, setCountryInfo] = useState({})
 
-  const countryInfo = country => {
-
-    const key = Object
-      .keys(countriesObj)
-      .filter(key => countriesObj[key].name.common === country)
-      return countriesObj[key]
-  }
   if (filteredCountriesList.length > 10) {
     return (
       <div>Too many countries, specify another filter</div>
@@ -31,27 +25,40 @@ const CountriesDisplayer = ({ filteredCountriesList, countriesObj }) => {
     )  
   } else if (filteredCountriesList.length === 1) {
     const country = filteredCountriesList[0]
-    const info = countryInfo(country)
-    return (
-      <div>
-        <h1>{country}</h1>
-        <div>capital {info.capital[0]}</div>
-        <div>area {info.area}</div>
-        <br />
-        <h2>languages:</h2>
-        <br />
-        <ul>
-          {Object.keys(info.languages).map(keyLang => {
-            return (<li key={keyLang}>
-              {info.languages[keyLang]}
-            </li>)
-          })}
-        </ul>
-        <img src={info.flags.svg} alt={info.flags.alt} width="300" height="300" />
-        <div></div>
-      </div>
-    )
-  } else {
+    countriesService.getOneCountry(country)
+      .then(data => {
+        const newCountryInfo = {...data}
+        setCountryInfo(newCountryInfo)
+      })
+
+      if (!countryInfo) {
+        return (
+          <div>Waiting for a response</div>
+        )
+      }
+
+      return (
+        <div>
+          <h1>{country}</h1>
+          <div>capital {countryInfo.capital[0]}</div>
+          <div>area {countryInfo.area}</div>
+          <br />
+          <h2>languages:</h2>
+          <br />
+          <ul>
+            {Object.keys(countryInfo.languages).map(keyLang => {
+              return (<li key={keyLang}>
+                {countryInfo.languages[keyLang]}
+              </li>)
+            })}
+          </ul>
+          <img src={countryInfo.flags.svg} alt={countryInfo.flags.alt} width="450" height="300" />
+        </div>
+      )  
+
+
+
+    } else {
     return (
       <div>No matches found</div>
     )
