@@ -32,7 +32,6 @@ const CountriesDisplayer = ({ filteredCountriesList, countriesObj }) => {
   } else if (filteredCountriesList.length === 1) {
     const country = filteredCountriesList[0]
     const info = countryInfo(country)
-
     return (
       <div>
         <h1>{country}</h1>
@@ -41,9 +40,13 @@ const CountriesDisplayer = ({ filteredCountriesList, countriesObj }) => {
         <br />
         <h2>languages:</h2>
         <br />
-        {/* <ul>
-          {String(Object.keys(info.laguanges))}
-        </ul> */}
+        <ul>
+          {Object.keys(info.languages).map(keyLang => {
+            return (<li key={keyLang}>
+              {info.languages[keyLang]}
+            </li>)
+          })}
+        </ul>
         <img src={info.flags.svg} alt={info.flags.alt} width="300" height="300" />
         <div></div>
       </div>
