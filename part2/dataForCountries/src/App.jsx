@@ -11,7 +11,12 @@ const Filter = ({ handleFilterText }) => {
 }
 
 const CountriesDisplayer = ({ filteredCountriesList }) => {
+
   const [countryInfo, setCountryInfo] = useState({})
+
+  const handleCountryButton = (country) => {
+    console.log(country)
+  }
 
   if (filteredCountriesList.length > 10) {
     return (
@@ -20,7 +25,13 @@ const CountriesDisplayer = ({ filteredCountriesList }) => {
   } else if (filteredCountriesList.length <= 10 && filteredCountriesList.length > 1 ){
     return (
       <ul>
-        {filteredCountriesList.map(country => <li key={country}>{country}</li>)}
+        {filteredCountriesList.map(country => {
+          return (
+            <li key={country}>
+              {country} <button onClick={() => handleCountryButton(country)}>show</button>
+            </li>
+          )
+        })}
       </ul>
     )  
   } else if (filteredCountriesList.length === 1) {
@@ -56,8 +67,6 @@ const CountriesDisplayer = ({ filteredCountriesList }) => {
         </div>
       )  
 
-
-
     } else {
     return (
       <div>No matches found</div>
@@ -73,13 +82,11 @@ const App = () => {
   const handleFilterText = (event) => {
     setFilterText(event.target.value)
   }
-
   const filteredCountriesList = filterText === '' ?
   countriesList : countriesList.filter(
     country => country.toLowerCase().includes(filterText.toLowerCase())
   )
-
-
+  
   useEffect(() => {
     countriesService
     .getCountries()
