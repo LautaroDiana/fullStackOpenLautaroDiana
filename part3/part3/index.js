@@ -1,29 +1,9 @@
+require('dotenv').config()
 const express = require('express')
 const cors = require('cors')
-const mongoose = require('mongoose')
 const app = express()
 
-const password = process.argv[2]
-
-const url = `mongodb+srv://lautaro:${password}@cluster0.yvmm2.mongodb.net/noteApp?retryWrites=true&w=majority&appName=Cluster0`
-
-mongoose.set('strictQuery', false)
-mongoose.connect(url)
-
-const noteSchema = new mongoose.Schema({
-    content: String,
-    important: Boolean,
-})
-
-const Note = new mongoose.model('Note', noteSchema)
-
-noteSchema.set('toJSON', {
-    transform: (document, returnedObject) => {
-        returnedObject.id = returnedObject._id.toString()
-        delete returnedObject._id
-        delete returnedObject.__v
-    }
-})
+const Note = require('./models/note')
 
 let notes = [
     {
@@ -104,7 +84,7 @@ app.post('/api/notes', (request, response) => {
     response.json(note)
 })
 
-const PORT = process.env.PORT || 3001
+const PORT = process.env.PORT 
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`)
 })
