@@ -1,6 +1,29 @@
 const express = require('express')
 const cors = require('cors')
+const mongoose = require('mongoose')
 const app = express()
+
+const password = process.argv[2]
+
+const url = `mongodb+srv://lautaro:${password}@cluster0.yvmm2.mongodb.net/noteApp?retryWrites=true&w=majority&appName=Cluster0`
+
+mongoose.set('strictQuery', false)
+mongoose.connect(url)
+
+const noteSchema = new mongoose.Schema({
+    content: String,
+    important: Boolean,
+})
+
+const Note = new mongoose.model('Note', noteSchema)
+
+noteSchema.set('toJSON', {
+    transform: (document, returnedObject) => {
+        returnedObject.id = returnedObject._id.toString()
+        delete returnedObject._id
+        delete returnedObject.__v
+    }
+})
 
 let notes = [
     {
@@ -28,8 +51,11 @@ app.get('/', (request, response) => {
     response.send('<h1>Hello world!</h1>')
 })
 app.get('/api/notes', (request, response) => {
-    response.json(notes)
+    Note.find({}).then(notes => {
+        response.json(notes)
+    })
 })
+
 app.get('/api/notes/:id', (request,response) => {
     const id = Number(request.params.id)
     const note = notes.find(note => note.id === id)
