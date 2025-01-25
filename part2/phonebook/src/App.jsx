@@ -80,7 +80,7 @@ const App = () => {
   const [displayNotification, setDisplayNotification] = useState(false)
   const [displayMessage, setDisplayMessage] = useState('')
   const [displayIsError, setDisplayIsError] = useState(false)
-
+console.log(persons)
   useEffect(() => {
     personService.getAll()
     .then(
@@ -97,6 +97,7 @@ const App = () => {
         if (confirm) {
           const personToChange = persons.find(person => person.name === newName)
           const changedPerson = {...personToChange, number: newNumber}
+          console.log(persons)
           personService.update(personToChange.id, changedPerson)
             .then(returnedPerson => {
               setPersons(persons.map(person => person.id !== returnedPerson.id ? person : changedPerson))
@@ -135,6 +136,7 @@ const App = () => {
               setDisplayMessage('')
             }, 5000)
           })
+          .catch(error => console.log(error.message))
       }  
     }
   }
