@@ -48,6 +48,13 @@ test('post one new blog in db', async () => {
 
 })
 
+test('verify that the identifier for a blog in the database is "id"', async () => {
+    const blogs = await Blog.find({})
+
+    const blogExample = blogs[0].toJSON()
+    assert.strictEqual(Object.keys(blogExample).includes('id'), true)
+})
+
 after(async () => {
     await mongoose.connection.close()
 })
