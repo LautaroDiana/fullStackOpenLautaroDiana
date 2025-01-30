@@ -55,6 +55,46 @@ test('verify that the identifier for a blog in the database is "id"', async () =
     assert.strictEqual(Object.keys(blogExample).includes('id'), true)
 })
 
+describe('verify what happens if a value is missing', () => {
+    test('if likes value is missing, the default value is 0', async () => {
+        const newBlog = {
+            title: "First class tests",
+            author: "Robert C. Martin",
+            url: "http://blog.cleancoder.com/uncle-bob/2017/05/05/TestDefinitions.htmll",
+        }
+    
+        const response = await api.post('/api/blogs')
+            .send(newBlog)
+            .expect(201)
+    
+        assert.strictEqual(response.body.likes, 0)
+    })  
+
+    test('if title value is missing, status is 400', async () => {
+        const newBlog = {
+            author: "Robert C. Martin",
+            url: "http://blog.cleancoder.com/uncle-bob/2017/05/05/TestDefinitions.htmll",
+            likes: 10,
+        }
+
+        const response = await api.post('/api/blogs')
+            .send(newBlog)
+            .expect(400)
+    })
+
+    test('if url value is missing, status is 400', async () => {
+        const newBlog = {
+            title: "First class tests",
+            author: "Robert C. Martin",
+            likes: 10,
+        }
+
+        const response = await api.post('/api/blogs')
+            .send(newBlog)
+            .expect(400)
+    })
+})
+
 after(async () => {
     await mongoose.connection.close()
 })
