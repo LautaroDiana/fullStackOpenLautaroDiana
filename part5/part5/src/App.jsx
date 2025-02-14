@@ -3,22 +3,10 @@ import {Note} from "./components/Note"
 import { Notification } from "./components/Notification"
 import noteService from './services/notes'
 import loginService from './services/login'
-
-const Footer = () => {
-  const footerStyle = {
-    color: 'green',
-    fontStyle: 'italic',
-    fontSize: 16
-  }
-
-  return (
-    <div style={footerStyle}>
-      <br />
-      <em>Note app, Department of Computer Science, University of Helsinki, 2024</em>
-    </div>
-  )
-}
-
+import Footer from './components/Footer'
+import LoginForm from './components/LoginForm'
+import Togglable from './components/Togglable'
+import NoteForm from "./components/NoteForm"
 const App = () => {
   const [notes, setNotes] = useState([])
   const [newNote, setNewNote] = useState('a new note...')
@@ -28,6 +16,8 @@ const App = () => {
   const [username, setUsername] = useState("")
   const [password, setPassword] = useState("")
   const [user, setUser] = useState(null)
+
+  const [loginVisible, setLoginVisible] = useState(false)
   
   useEffect(() => {
     noteService
@@ -121,31 +111,31 @@ const App = () => {
       })
   }
 
-  const loginForm = () => (
-    <form onSubmit={handleLogin}>
-    <div>
-        <input 
-          type="text"
-          value={username}
-          name="Username"
-          placeholder="username"
-          onChange={event => setUsername(event.target.value)}
-        />
-      </div>
-      <div>
-        <input 
-          type="text"
-          value={password}
-          name="Password"
-          placeholder="password"
-          onChange={event => setPassword(event.target.value)}
-        />
-      </div>
-      <div>
-        <button >login</button>
-      </div>
-    </form>
-  )
+  // const loginForm = () => (
+  //   <form onSubmit={handleLogin}>
+  //   <div>
+  //       <input 
+  //         type="text"
+  //         value={username}
+  //         name="Username"
+  //         placeholder="username"
+  //         onChange={event => setUsername(event.target.value)}
+  //       />
+  //     </div>
+  //     <div>
+  //       <input 
+  //         type="text"
+  //         value={password}
+  //         name="Password"
+  //         placeholder="password"
+  //         onChange={event => setPassword(event.target.value)}
+  //       />
+  //     </div>
+  //     <div>
+  //       <button >login</button>
+  //     </div>
+  //   </form>
+  // )
 
   const notesForm = () => (
     <form onSubmit={addNote}>
@@ -157,6 +147,29 @@ const App = () => {
     </form>
   )
 
+  const loginForm = () => {
+    const hideWhenVisible = { display: loginVisible ? 'none' : ''}
+    const showWhenVisible = { display: loginVisible ? '' : 'none'}
+
+    return (
+      <div>
+        <div style={hideWhenVisible}>
+          <button onClick={() => setLoginVisible(true)}>log in</button>
+        </div>
+        <div style={showWhenVisible}>
+          <LoginForm 
+            username={username}
+            password={password}
+            handleUsernameChange={({ target }) => setUsername(target.value)}
+            handlePasswordChange={({ target }) => setPassword(target.value)}
+            handleSubmit={handleLogin}
+          />
+          <button onClick={() => setLoginVisible(false)}>cancel</button>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div>
       <h1>notes</h1>
@@ -165,7 +178,13 @@ const App = () => {
         user === null ? loginForm() 
         : <div>
             <p>{user.name} logged</p>
-            {notesForm()}
+            <Togglable buttonLabel="new note">
+              <NoteForm
+                onSubmit={addNote}
+                value={newNote}
+                handleChange={handleNoteChange}
+              />
+            </Togglable>
         </div>
       }
       <div>
