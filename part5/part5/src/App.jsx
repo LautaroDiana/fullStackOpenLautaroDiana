@@ -1,5 +1,5 @@
-import { useState, useEffect } from "react"
-import {Note} from "./components/Note"
+import { useState, useEffect, useRef } from "react"
+import { Note } from "./components/Note"
 import { Notification } from "./components/Notification"
 import noteService from './services/notes'
 import loginService from './services/login'
@@ -9,7 +9,6 @@ import Togglable from './components/Togglable'
 import NoteForm from "./components/NoteForm"
 const App = () => {
   const [notes, setNotes] = useState([])
-  const [newNote, setNewNote] = useState('a new note...')
   const [showAll, setShowAll] = useState(true)
   const [errorMessage, setErrorMessage] = useState(null)
 
@@ -18,6 +17,8 @@ const App = () => {
   const [user, setUser] = useState(null)
 
   const [loginVisible, setLoginVisible] = useState(false)
+
+  const noteFormRef = useRef()
   
   useEffect(() => {
     noteService
@@ -37,27 +38,13 @@ const App = () => {
     }
   }, [])
 
-  const addNote = (event) => {
-    event.preventDefault()
-    const noteObject = {
-      content: newNote,
-      important: Math.random() < 0.5,
-      // id: notes.length + 1,
-    }
-    // setNotes(notes.concat(noteObject))
-    // setNewNote('')
-
+  const addNote = (noteObject) => {
+    noteFormRef.current.toggleVisibility()
     noteService
       .create(noteObject)
       .then(returnedNote => {
         setNotes(notes.concat(returnedNote))
-        setNewNote('')
       })
-  }
-
-  const handleNoteChange = (event) => {
-    // console.log(event.target.value)
-    setNewNote(event.target.value)
   }
 
   const handleLogin = async (event) => {
@@ -137,16 +124,6 @@ const App = () => {
   //   </form>
   // )
 
-  const notesForm = () => (
-    <form onSubmit={addNote}>
-      <input 
-        value={newNote}
-        onChange={handleNoteChange}
-      />
-      <button type="submit">save</button>
-    </form>
-  )
-
   const loginForm = () => {
     const hideWhenVisible = { display: loginVisible ? 'none' : ''}
     const showWhenVisible = { display: loginVisible ? '' : 'none'}
@@ -178,11 +155,9 @@ const App = () => {
         user === null ? loginForm() 
         : <div>
             <p>{user.name} logged</p>
-            <Togglable buttonLabel="new note">
+            <Togglable buttonLabel="new note" ref={noteFormRef}>
               <NoteForm
-                onSubmit={addNote}
-                value={newNote}
-                handleChange={handleNoteChange}
+                createNote={addNote}
               />
             </Togglable>
         </div>
